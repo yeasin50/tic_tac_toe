@@ -2,6 +2,18 @@ import 'package:tic_tac_toe/src/presentation/bloc/tic_tac_toe_game_engine.dart';
 
 import '../models/toe_data.dart';
 
+class GameBoard {
+  const GameBoard({
+    required this.data,
+    this.score,
+    this.depth,
+  });
+
+  final List<ToeData> data;
+  final int? score;
+  final int? depth;
+}
+
 /// reduce and reuse the game logic
 /// Check the current game state
 mixin GameStateMixin {
@@ -89,4 +101,19 @@ mixin GameStateMixin {
           element.state == cells[0].state,
     );
   }
+
+  ///* Track the minimax algorithm
+  ///* return dept and board
+  final List<GameBoard> _generatedData = [];
+  List<GameBoard> get generatedData => _generatedData;
+
+  void addGeneratedData(int depth, List<ToeData> data, int score) {
+    _generatedData.add(GameBoard(
+      data: data,
+      depth: depth,
+      score: score,
+    ));
+  }
+
+  void clearGeneratedData() => _generatedData.clear();
 }

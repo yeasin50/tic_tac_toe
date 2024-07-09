@@ -15,4 +15,17 @@ class ToeData {
 
   final ToeState state;
   final int index;
+
+  ToeData copyWith({
+    ToeState? state,
+    int? index,
+  }) {
+    return ToeData(
+      state: state ?? this.state,
+      index: index ?? this.index,
+    );
+  }
+
+  @override
+  String toString() => 'ToeData(state: $state, index: $index)';
 }
