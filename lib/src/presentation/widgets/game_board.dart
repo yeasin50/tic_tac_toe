@@ -37,14 +37,25 @@ class _GameBoardState extends State<GameBoard> {
   ///
   @override
   void initState() {
-    engine.init();
     super.initState();
+    engine.init();
+    aiTap();
   }
 
   @override
   void dispose() {
     engine.dispose();
     super.dispose();
+  }
+
+  void aiTap() {
+    if (enabledAI) {
+      final int? index = widget.oPlayer!.findBestMove(engine.data);
+      debugPrint("ai index: $index");
+      if (index != null) {
+        engine.onXPressed(index: index);
+      }
+    }
   }
 
   void updateGameState() {
@@ -57,14 +68,8 @@ class _GameBoardState extends State<GameBoard> {
     widget.oPlayer?.clearGeneratedData();
 
     if (isXPlayer) {
-      engine.onXPressed(index: data.index);
-      if (enabledAI) {
-        final int? index = widget.oPlayer!.findBestMove(engine.data);
-        debugPrint("ai index: $index");
-        if (index != null) {
-          engine.onOPressed(index: index);
-        }
-      }
+      engine.onOPressed(index: data.index);
+      aiTap();
     } else {
       engine.onOPressed(index: data.index);
     }
@@ -80,6 +85,7 @@ class _GameBoardState extends State<GameBoard> {
       onPressed: () {
         engine.init();
         tapCount = 0;
+        aiTap();
         updateGameState();
       },
       child: const Text("Restart"),
