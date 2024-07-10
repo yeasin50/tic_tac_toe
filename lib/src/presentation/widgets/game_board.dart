@@ -69,6 +69,7 @@ class _GameBoardState extends State<GameBoard> {
 
     if (isXPlayer) {
       engine.onOPressed(index: data.index);
+
       aiTap();
     } else {
       engine.onOPressed(index: data.index);

@@ -15,7 +15,6 @@ class AIPlayer with GameStateMixin {
     int? bestMoveIndex;
     int bestScore = -100000;
 
-    //
     for (int i = 0; i < board.length; i++) {
       if (board[i].state != ToeState.empty) continue;
 
@@ -53,32 +52,23 @@ class AIPlayer with GameStateMixin {
       };
     }
 
-    if (isMaximizingPlayer) {
-      int bestScore = -100000;
-      for (int i = 0; i < board.length; i++) {
-        if (board[i].state != ToeState.empty) continue;
+    int bestScore = isMaximizingPlayer ? -100000 : 100000;
+    for (int i = 0; i < board.length; i++) {
+      if (board[i].state != ToeState.empty) continue;
 
-        List<ToeData> newBoard = board.map((data) => data.copyWith()).toList();
-        newBoard[i] = newBoard[i].copyWith(state: ToeState.x);
+      List<ToeData> newBoard = board.map((data) => data.copyWith()).toList();
+      newBoard[i] = newBoard[i].copyWith(
+        state: isMaximizingPlayer ? ToeState.x : ToeState.o,
+      );
 
-        int score = _miniMax(
-            board: newBoard, isMaximizingPlayer: false, depth: depth + 1);
-        bestScore = math.max(bestScore, score);
-      }
-      return bestScore;
-    } else {
-      int bestScore = 100000;
-      for (int i = 0; i < board.length; i++) {
-        if (board[i].state != ToeState.empty) continue;
-
-        List<ToeData> newBoard = board.map((data) => data.copyWith()).toList();
-        newBoard[i] = newBoard[i].copyWith(state: ToeState.o);
-
-        int score = _miniMax(
-            board: newBoard, isMaximizingPlayer: true, depth: depth + 1);
-        bestScore = math.min(bestScore, score);
-      }
-      return bestScore;
+      int score = _miniMax(
+          board: newBoard,
+          isMaximizingPlayer: !isMaximizingPlayer,
+          depth: depth + 1);
+      bestScore = isMaximizingPlayer
+          ? math.max(bestScore, score)
+          : math.min(bestScore, score);
     }
+    return bestScore;
   }
 }
