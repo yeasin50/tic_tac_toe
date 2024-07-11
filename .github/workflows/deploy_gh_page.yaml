@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [closed]
     branches:
-      - deploy-and-documentation
+      - master
 
 # jobs:
 
