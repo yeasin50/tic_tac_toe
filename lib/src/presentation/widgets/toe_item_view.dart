@@ -7,11 +7,11 @@ class ToeItemView extends StatelessWidget {
   const ToeItemView({
     super.key,
     required this.data,
-    required this.onTap,
+     this.onTap,
   });
 
   final ToeData data;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
