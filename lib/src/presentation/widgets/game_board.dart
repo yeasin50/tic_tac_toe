@@ -56,7 +56,6 @@ class _GameBoardState extends State<TickTacToeGameBoard> {
   void initState() {
     super.initState();
     engine.init();
-    if (enabledAI) aiTap();
   }
 
   @override
@@ -69,8 +68,8 @@ class _GameBoardState extends State<TickTacToeGameBoard> {
     final int? index = widget.oPlayer!.findBestMove(engine.data);
 
     if (index != null) {
-      engine.onXPressed(index: index);
-      isXPlayer = false;
+      engine.onOPressed(index: index);
+      isXPlayer = true;
     }
   }
 
@@ -83,24 +82,30 @@ class _GameBoardState extends State<TickTacToeGameBoard> {
     if (data.state.isTaken || gameState.isGameOver) return;
     widget.oPlayer?.clearGeneratedData();
 
-    if (isXPlayer && enabledAI == false) {
+    if (isXPlayer) {
       engine.onXPressed(index: data.index);
-    } else {
-      engine.onOPressed(index: data.index);
+      isXPlayer = false;
       if (enabledAI) aiTap();
     }
-    isXPlayer = !isXPlayer;
+    //  else {
+    //   engine.onOPressed(index: data.index);
+    //   isXPlayer = true;
+    // }
+
     updateGameState();
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    final restartBtn = TextButton(
+    final restartBtn = ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.deepPurpleAccent,
+        foregroundColor: Colors.white,
+      ),
       onPressed: () {
         engine.init();
         isXPlayer = true;
-        if (enabledAI) aiTap();
         updateGameState();
       },
       child: const Text("Restart"),
