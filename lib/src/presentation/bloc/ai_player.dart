@@ -8,26 +8,30 @@ import 'tic_tac_toe_game_engine.dart';
 ///  [List<ToeData>] is the current board state which will length of 9
 ///   X -
 ///   O -
+/// FIXME: [isMaximizingPlayer==true] isnt tested yet
 class AIPlayer with GameStateMixin {
   int? findBestMove(List<ToeData> board, {bool isMaximizingPlayer = false}) {
     assert(board.length == 9, "boardState length should be 9");
 
     int? bestMoveIndex;
-    int bestScore = -100000;
+    int bestScore = isMaximizingPlayer ? -100000 : 100000;
 
     for (int i = 0; i < board.length; i++) {
       if (board[i].state != ToeState.empty) continue;
 
       List<ToeData> newBoard = board.map((data) => data.copyWith()).toList();
-      newBoard[i] = newBoard[i].copyWith(state: ToeState.x);
+      newBoard[i] = newBoard[i].copyWith(state:isMaximizingPlayer? ToeState.x: ToeState.o);
 
       int score = _miniMax(
         board: newBoard,
-        isMaximizingPlayer: false,
+        isMaximizingPlayer:  !isMaximizingPlayer,
         depth: 0,
       );
 
-      if (score > bestScore) {
+      if (score > bestScore && isMaximizingPlayer) {
+        bestScore = score;
+        bestMoveIndex = i;
+      }else if (score < bestScore && !isMaximizingPlayer) {
         bestScore = score;
         bestMoveIndex = i;
       }
