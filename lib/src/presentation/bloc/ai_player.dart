@@ -1,3 +1,7 @@
+import 'dart:isolate';
+
+import 'package:flutter/foundation.dart';
+
 import '../models/toe_data.dart';
 import 'game_state_mixin.dart';
 import 'dart:math' as math;
@@ -10,7 +14,18 @@ import 'tic_tac_toe_game_engine.dart';
 ///   O -
 /// FIXME: [isMaximizingPlayer==true] isnt tested yet
 class AIPlayer with GameStateMixin {
-  int? findBestMove(List<ToeData> board, {bool isMaximizingPlayer = false}) {
+  Future<int?> findBestMove(
+    List<ToeData> board, {
+    bool isMaximizingPlayer = false,
+  }) async {
+    final params = [board, isMaximizingPlayer];
+    final bestMove = await compute(_findBestMove, params);
+    return bestMove;
+  }
+
+  int? _findBestMove(List data) {
+    final board = data[0] as List<ToeData>;
+    final isMaximizingPlayer = data[1] as bool;
     assert(board.length == 9, "boardState length should be 9");
 
     int? bestMoveIndex;
@@ -20,18 +35,19 @@ class AIPlayer with GameStateMixin {
       if (board[i].state != ToeState.empty) continue;
 
       List<ToeData> newBoard = board.map((data) => data.copyWith()).toList();
-      newBoard[i] = newBoard[i].copyWith(state:isMaximizingPlayer? ToeState.x: ToeState.o);
+      newBoard[i] = newBoard[i]
+          .copyWith(state: isMaximizingPlayer ? ToeState.x : ToeState.o);
 
       int score = _miniMax(
         board: newBoard,
-        isMaximizingPlayer:  !isMaximizingPlayer,
+        isMaximizingPlayer: !isMaximizingPlayer,
         depth: 0,
       );
 
       if (score > bestScore && isMaximizingPlayer) {
         bestScore = score;
         bestMoveIndex = i;
-      }else if (score < bestScore && !isMaximizingPlayer) {
+      } else if (score < bestScore && !isMaximizingPlayer) {
         bestScore = score;
         bestMoveIndex = i;
       }
