@@ -64,12 +64,13 @@ class _GameBoardState extends State<TickTacToeGameBoard> {
     super.dispose();
   }
 
-  void aiTap() {
-    final int? index = widget.oPlayer!.findBestMove(engine.data);
+  void aiTap() async {
+    final int? index = await widget.oPlayer!.findBestMove(engine.data);
 
     if (index != null) {
       engine.onOPressed(index: index);
       isXPlayer = true;
+      updateGameState();
     }
   }
 
