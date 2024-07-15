@@ -86,11 +86,10 @@ class _GameBoardState extends State<TickTacToeGameBoard> {
       engine.onXPressed(index: data.index);
       isXPlayer = false;
       if (enabledAI) aiTap();
+    } else {
+      engine.onOPressed(index: data.index);
+      isXPlayer = true;
     }
-    //  else {
-    //   engine.onOPressed(index: data.index);
-    //   isXPlayer = true;
-    // }
 
     updateGameState();
     setState(() {});
