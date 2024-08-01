@@ -64,7 +64,7 @@ class _GameBoardState extends State<TickTacToeGameBoard> {
     super.dispose();
   }
 
-  void aiTap() async {
+  Future<void> aiTap() async {
     final int? index = await widget.oPlayer!.findBestMove(engine.data);
 
     if (index != null) {
@@ -84,10 +84,12 @@ class _GameBoardState extends State<TickTacToeGameBoard> {
     widget.oPlayer?.clearGeneratedData();
 
     if (isXPlayer) {
-      engine.onXPressed(index: data.index);
       isXPlayer = false;
-      if (enabledAI) aiTap();
-    } else {
+      engine.onXPressed(index: data.index);
+      setState(() {});
+
+      if (enabledAI) await aiTap();
+    } else if (isXPlayer == false && enabledAI == false) {
       engine.onOPressed(index: data.index);
       isXPlayer = true;
     }
@@ -143,7 +145,10 @@ class _GameBoardState extends State<TickTacToeGameBoard> {
                     GameState.winO => const Text("O Win"),
                     _ => const SizedBox(),
                   },
-                  if (gameState.isGameOver) restartBtn
+                  if (gameState.isGameOver)
+                    restartBtn
+                  else if (enabledAI && isXPlayer == false)
+                    CircularProgressIndicator()
                 ],
               ),
             ),
