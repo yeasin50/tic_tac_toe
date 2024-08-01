@@ -1,5 +1,3 @@
-import 'dart:isolate';
-
 import 'package:flutter/foundation.dart';
 
 import '../models/toe_data.dart';
@@ -7,6 +5,23 @@ import 'game_state_mixin.dart';
 import 'dart:math' as math;
 
 import 'tic_tac_toe_game_engine.dart';
+
+/// hold the stage of the game
+class AIGameBoardData {
+  const AIGameBoardData({
+    required this.dept,
+    required this.parent,
+    required this.board,
+    required this.score,
+    this.nodes = const [],
+  });
+
+  final int dept;
+  final int? parent;
+  final List<ToeData> board;
+  final int score;
+  final List<AIGameBoardData> nodes;
+}
 
 /// decide the best possible move for the player.
 ///  [List<ToeData>] is the current board state which will length of 9

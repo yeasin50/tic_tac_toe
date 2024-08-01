@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:tic_tac_toe/src/presentation/bloc/game_state_mixin.dart';
-import 'package:tic_tac_toe/src/presentation/widgets/game_state_view.dart';
 
-import '../models/toe_data.dart';
+import 'bloc/game_state_mixin.dart';
+import 'widgets/game_state_view.dart';
 
-class AiMovePreview extends StatelessWidget {
-  const AiMovePreview({super.key, required this.data});
+///  preview the possibility move of AI
+class AiMovePreviewPage extends StatelessWidget {
+  const AiMovePreviewPage._({required this.data});
 
   final List<GameBoard> data;
 
+  static MaterialPageRoute route({required List<GameBoard> data}) {
+    return MaterialPageRoute(
+      builder: (context) => AiMovePreviewPage._(data: data),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    
-    return Expanded(
-      child: SingleChildScrollView(
+    return Scaffold(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             for (final d in data)
@@ -28,8 +33,8 @@ class AiMovePreview extends StatelessWidget {
                         SizedBox(
                           width: 120,
                           child: GameStateView(
-                            board:  d.data,
-                            score:  d.score,
+                            board: d.data,
+                            score: d.score,
                           ),
                         ),
                       ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/src/presentation/ai_move_preview_board_page.dart';
 
 import '../bloc/ai_player.dart';
 import '../bloc/tic_tac_toe_game_engine.dart';
@@ -64,7 +65,7 @@ class _GameBoardState extends State<TickTacToeGameBoard> {
     super.dispose();
   }
 
-  void aiTap() async {
+  Future<void> aiTap() async {
     final int? index = await widget.oPlayer!.findBestMove(engine.data);
 
     if (index != null) {
@@ -84,10 +85,12 @@ class _GameBoardState extends State<TickTacToeGameBoard> {
     widget.oPlayer?.clearGeneratedData();
 
     if (isXPlayer) {
-      engine.onXPressed(index: data.index);
       isXPlayer = false;
-      if (enabledAI) aiTap();
-    } else {
+      engine.onXPressed(index: data.index);
+      setState(() {});
+
+      if (enabledAI) await aiTap();
+    } else if (isXPlayer == false && enabledAI == false) {
       engine.onOPressed(index: data.index);
       isXPlayer = true;
     }
@@ -113,6 +116,14 @@ class _GameBoardState extends State<TickTacToeGameBoard> {
 
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          ElevatedButton.icon(
+            onPressed: () {
+              // Navigator.of(context).push(AiMovePreviewPage.route(data: engine.))
+            },
+            label: const Text("Preview"),
+          )
+        ],
         title: Text("Tic-Tac-Toe ${enabledAI ? "-with AI" : ""}"),
       ),
       body: Center(
@@ -143,7 +154,10 @@ class _GameBoardState extends State<TickTacToeGameBoard> {
                     GameState.winO => const Text("O Win"),
                     _ => const SizedBox(),
                   },
-                  if (gameState.isGameOver) restartBtn
+                  if (gameState.isGameOver)
+                    restartBtn
+                  else if (enabledAI && isXPlayer == false)
+                    CircularProgressIndicator()
                 ],
               ),
             ),

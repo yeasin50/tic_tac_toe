@@ -49,6 +49,7 @@ class _GamePlayPageState extends State<GamePlayPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              
               const Text(
                 "Play Mode",
                 textAlign: TextAlign.center,
