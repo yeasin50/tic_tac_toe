@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/src/presentation/ai_move_preview_board_page.dart';
 
 import '../bloc/ai_player.dart';
 import '../bloc/tic_tac_toe_game_engine.dart';
@@ -115,6 +116,14 @@ class _GameBoardState extends State<TickTacToeGameBoard> {
 
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          ElevatedButton.icon(
+            onPressed: () {
+              // Navigator.of(context).push(AiMovePreviewPage.route(data: engine.))
+            },
+            label: const Text("Preview"),
+          )
+        ],
         title: Text("Tic-Tac-Toe ${enabledAI ? "-with AI" : ""}"),
       ),
       body: Center(
