@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tic_tac_toe/src/presentation/ai_move_preview_board_page.dart';
 
 import '../bloc/ai_player.dart';
 import '../bloc/tic_tac_toe_game_engine.dart';
@@ -103,66 +102,83 @@ class _GameBoardState extends State<TickTacToeGameBoard> {
   Widget build(BuildContext context) {
     final restartBtn = ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.deepPurpleAccent,
+        backgroundColor: Colors.deepPurpleAccent.withAlpha(120),
         foregroundColor: Colors.white,
+        padding: const EdgeInsets.all(32),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
       ),
       onPressed: () {
         engine.init();
         isXPlayer = true;
         updateGameState();
       },
-      child: const Text("Restart"),
+      child: const Text(
+        "Restart",
+        style: TextStyle(fontSize: 20),
+      ),
     );
 
+    final gameOverTextStyle =
+        Theme.of(context).textTheme.headlineLarge!.copyWith(
+              color: Colors.white,
+            );
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          ElevatedButton.icon(
-            onPressed: () {
-              // Navigator.of(context).push(AiMovePreviewPage.route(data: engine.))
-            },
-            label: const Text("Preview"),
-          )
-        ],
         title: Text("Tic-Tac-Toe ${enabledAI ? "-with AI" : ""}"),
       ),
       body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Expanded(
-              child: Center(
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: GameStateView(
+        child: Center(
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: ColoredBox(
+              color: gameState.isGameOver
+                  ? Colors.black.withOpacity(0.5)
+                  : Colors.transparent,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  GameStateView(
                     board: engine.data,
                     onTap: (int index) {
                       onTap(engine.data.elementAt(index));
                     },
                   ),
-                ),
-              ),
-            ),
-
-            SizedBox(
-              height: 100,
-              child: Column(
-                children: [
-                  switch (gameState) {
-                    GameState.tie => const Text("Tie"),
-                    GameState.winX => const Text("X Win"),
-                    GameState.winO => const Text("O Win"),
-                    _ => const SizedBox(),
-                  },
-                  if (gameState.isGameOver)
-                    restartBtn
-                  else if (enabledAI && isXPlayer == false)
-                    CircularProgressIndicator()
+                  Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        switch (gameState) {
+                          GameState.tie => Text(
+                              "Tie",
+                              style: gameOverTextStyle,
+                            ),
+                          GameState.winX => Text(
+                              "X Win",
+                              style: gameOverTextStyle,
+                            ),
+                          GameState.winO => Text(
+                              "O Win",
+                              style: gameOverTextStyle,
+                            ),
+                          _ => const SizedBox(),
+                        },
+                        const SizedBox(height: 24),
+                        if (gameState.isGameOver)
+                          restartBtn
+                        else if (enabledAI && isXPlayer == false)
+                          const SizedBox.square(
+                            dimension: 100,
+                            child: CircularProgressIndicator(),
+                          )
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-            // AiMovePreview(data: widget.oPlayer?.generatedData ?? []),
-          ],
+          ),
         ),
       ),
     );
