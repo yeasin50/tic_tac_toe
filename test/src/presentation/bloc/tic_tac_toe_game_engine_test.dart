@@ -12,7 +12,7 @@ void main() {
           engine.onXPressed(index: 0);
           engine.onXPressed(index: 4);
           engine.onXPressed(index: 8);
-          expect(engine.gameState, GameState.winX);
+          expect(engine.currentGameState, GameState.winX);
         },
       );
       test(
@@ -23,7 +23,7 @@ void main() {
           engine.onOPressed(index: 0);
           engine.onOPressed(index: 4);
           engine.onOPressed(index: 8);
-          expect(engine.gameState, GameState.winO);
+          expect(engine.currentGameState, GameState.winO);
         },
       );
       test(
@@ -34,7 +34,7 @@ void main() {
           engine.onXPressed(index: 2);
           engine.onXPressed(index: 4);
           engine.onXPressed(index: 6);
-          expect(engine.gameState, GameState.winX);
+          expect(engine.currentGameState, GameState.winX);
         },
       );
       test(
@@ -45,7 +45,7 @@ void main() {
           engine.onOPressed(index: 2);
           engine.onOPressed(index: 4);
           engine.onOPressed(index: 6);
-          expect(engine.gameState, GameState.winO);
+          expect(engine.currentGameState, GameState.winO);
         },
       );
     });
@@ -61,7 +61,7 @@ void main() {
           engine.onXPressed(index: 0);
           engine.onXPressed(index: 3);
           engine.onXPressed(index: 6);
-          expect(engine.gameState, GameState.winX);
+          expect(engine.currentGameState, GameState.winX);
         },
       );
     });
@@ -72,7 +72,7 @@ void main() {
       engine.onOPressed(index: 0);
       engine.onOPressed(index: 3);
       engine.onOPressed(index: 6);
-      expect(engine.gameState, GameState.winO);
+      expect(engine.currentGameState, GameState.winO);
     });
 
     ///todo: add false-positive || exceptions tests

@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'bloc/ai_player.dart';
 
 import 'bloc/tic_tac_toe_game_engine.dart';
-import 'widgets/game_board.dart';
+import 'game_board_page.dart';
 
 /// the user will be playing on this page
 /// User will be decided if he wants to play with AI or not
 ///
-class GamePlayPage extends StatefulWidget {
-  const GamePlayPage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<GamePlayPage> createState() => _GamePlayPageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _GamePlayPageState extends State<GamePlayPage> {
+class _HomePageState extends State<HomePage> {
   ///
   void onNavigate(bool enableAi) {
     final route = TickTacToeGameBoard.route(

@@ -19,14 +19,16 @@ class GameBoard {
 mixin GameStateMixin {
   final boardSize = 3;
 
-  GameState getCurrentGameState(List<ToeData> data) {
+  CurrentGameState getCurrentGameState(List<ToeData> data) {
     // rows
     for (int i = 0; i < boardSize; i++) {
       final rowData = _getRow(data: data, rowIndex: i);
       if (_allSame(rowData)) {
-        return rowData.first.state == ToeState.o
-            ? GameState.winO
-            : GameState.winX;
+        final winner = rowData.first.state == ToeState.o ? GameState.winO : GameState.winX;
+        return CurrentGameState(
+          gameState: winner,
+          winnerLine: (0, i, 3, i),
+        );
       }
     }
 
@@ -34,41 +36,42 @@ mixin GameStateMixin {
     for (int i = 0; i < boardSize; i++) {
       final colData = _getColum(data: data, colIndex: i);
       if (_allSame(colData)) {
-        return colData.first.state == ToeState.o
-            ? GameState.winO
-            : GameState.winX;
+        final winner = colData.first.state == ToeState.o ? GameState.winO : GameState.winX;
+        return CurrentGameState(
+          gameState: winner,
+          winnerLine: (i, 0, i + 1, 2),
+        );
       }
     }
 
     ///for diagonal check topLeftToBottomRight
-    final topLeftToBottomRightData =
-        _getDiagonal(topLeftToBottomRight: true, data: data);
+    final topLeftToBottomRightData = _getDiagonal(topLeftToBottomRight: true, data: data);
     if (_allSame(topLeftToBottomRightData)) {
-      return topLeftToBottomRightData.first.state == ToeState.o
-          ? GameState.winO
-          : GameState.winX;
+      return CurrentGameState(
+        gameState: topLeftToBottomRightData.first.state == ToeState.o ? GameState.winO : GameState.winX,
+        winnerLine: (0, 0, 3, 2),
+      );
     }
 
     ///for diagonal check topRightToBottomLeft
-    final topRightToBottomLeftData =
-        _getDiagonal(topLeftToBottomRight: false, data: data);
+    final topRightToBottomLeftData = _getDiagonal(topLeftToBottomRight: false, data: data);
 
     if (_allSame(topRightToBottomLeftData)) {
-      return topRightToBottomLeftData.first.state == ToeState.o
-          ? GameState.winO
-          : GameState.winX;
+      return CurrentGameState(
+        gameState: topRightToBottomLeftData.first.state == ToeState.o ? GameState.winO : GameState.winX,
+        winnerLine: (2, 0, 1, 2),
+      );
     }
 
     // when all cells are filled, it will be a tie
     if (data.every((element) => element.state != ToeState.empty)) {
-      return GameState.tie;
+      return const CurrentGameState(gameState: GameState.tie);
     }
 
-    return GameState.playing;
+    return const CurrentGameState(gameState: GameState.playing);
   }
 
-  List<ToeData> _getRow({required List<ToeData> data, required int rowIndex}) =>
-      data.sublist(
+  List<ToeData> _getRow({required List<ToeData> data, required int rowIndex}) => data.sublist(
         rowIndex * boardSize,
         rowIndex * boardSize + boardSize,
       );
@@ -80,18 +83,14 @@ mixin GameStateMixin {
       data.where((e) => e.index % boardSize == colIndex).toList();
 
   /// can we remove fixed index and create separate algorithm
-  List<ToeData> _topLeftToBottomRight(List<ToeData> data) =>
-      [data[0], data[4], data[8]];
-  List<ToeData> _topRightToBottomLeft(List<ToeData> data) =>
-      [data[2], data[4], data[6]];
+  List<ToeData> _topLeftToBottomRight(List<ToeData> data) => [data[0], data[4], data[8]];
+  List<ToeData> _topRightToBottomLeft(List<ToeData> data) => [data[2], data[4], data[6]];
 
   List<ToeData> _getDiagonal({
     required bool topLeftToBottomRight,
     required List<ToeData> data,
   }) {
-    return topLeftToBottomRight
-        ? _topLeftToBottomRight(data)
-        : _topRightToBottomLeft(data);
+    return topLeftToBottomRight ? _topLeftToBottomRight(data) : _topRightToBottomLeft(data);
   }
 
   bool _allSame(List<ToeData> cells) {

@@ -50,8 +50,7 @@ class AIPlayer with GameStateMixin {
       if (board[i].state != ToeState.empty) continue;
 
       List<ToeData> newBoard = board.map((data) => data.copyWith()).toList();
-      newBoard[i] = newBoard[i]
-          .copyWith(state: isMaximizingPlayer ? ToeState.x : ToeState.o);
+      newBoard[i] = newBoard[i].copyWith(state: isMaximizingPlayer ? ToeState.x : ToeState.o);
 
       int score = _miniMax(
         board: newBoard,
@@ -77,9 +76,9 @@ class AIPlayer with GameStateMixin {
     required int depth,
   }) {
     //* check gameOver and return the score on terminal state
-    final gameState = getCurrentGameState(board);
-    if (gameState.isGameOver) {
-      return switch (gameState) {
+    final gameCurrentStateData = getCurrentGameState(board);
+    if (gameCurrentStateData.gameState.isGameOver) {
+      return switch (gameCurrentStateData.gameState) {
         GameState.tie => 0,
         GameState.winX => 1,
         GameState.winO => -1,
@@ -96,13 +95,8 @@ class AIPlayer with GameStateMixin {
         state: isMaximizingPlayer ? ToeState.x : ToeState.o,
       );
 
-      int score = _miniMax(
-          board: newBoard,
-          isMaximizingPlayer: !isMaximizingPlayer,
-          depth: depth + 1);
-      bestScore = isMaximizingPlayer
-          ? math.max(bestScore, score)
-          : math.min(bestScore, score);
+      int score = _miniMax(board: newBoard, isMaximizingPlayer: !isMaximizingPlayer, depth: depth + 1);
+      bestScore = isMaximizingPlayer ? math.max(bestScore, score) : math.min(bestScore, score);
     }
     return bestScore;
   }
